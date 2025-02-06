@@ -19,13 +19,18 @@ import {
 
 /** */
 function fetchWrapper(url, options, { success, degraded, failure }) {
-  return fetch(url, options)
-    .then(response => response.json().then((json) => {
-      if (response.status === 401) return (degraded || success)({ json, response });
-      if (response.ok) return success({ json, response });
-      return failure({ error: response.statusText, json, response });
-    }).catch(error => failure({ error, response })))
-    .catch(error => failure({ error }));
+  if (url.startsWith('http')) {
+    return fetch(url, options)
+      .then(response => response.json().then((json) => {
+        if (response.status === 401) return (degraded || success)({ json, response });
+        if (response.ok) return success({ json, response });
+        return failure({ error: response.statusText, json, response });
+      }).catch(error => failure({ error, response })))
+      .catch(error => failure({ error }));
+  }
+  // if url does not start with http, it correponds to plain text json
+  console.log('Receiving plain text json: ', url);
+  return success({ json: url });
 }
 
 /** */

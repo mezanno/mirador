@@ -44,6 +44,7 @@ export function ManifestForm({
           <TextField
             autoFocus
             fullWidth
+            multiline
             value={formValue}
             id="manifestURL"
             type="text"
